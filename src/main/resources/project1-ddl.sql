@@ -110,7 +110,8 @@ FROM ers_users eu ;
 
 --ers reimbursemnts 
 insert into ers_reimbursement_types (reimb_type)
-values ('Food'), ('Travel'), ('Hotel'), ('Other');
+values ('Food'), ('Travel'), ('Lodging'), ('Other');
+
 
 insert into ers_reimbursement_statuses (reimb_status)
 values ('Pending'), ('Approved'), ('Denied');
