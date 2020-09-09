@@ -130,7 +130,7 @@ public class UserRepository {
              * Prepared Statement uses user generated values, denoted with ?s
              */
             // second parameter here is used to indicate column names that will have generated values
-            PreparedStatement pstmt = conn.prepareStatement(sql, new String[] {"ers_user_id"});
+            PreparedStatement pstmt = conn.prepareStatement(sql, new String[] {"id"});
             pstmt.setString(1, newUser.getUsername());
             pstmt.setString(2, newUser.getPassword());
             pstmt.setString(3, newUser.getFirstName());
@@ -145,7 +145,7 @@ public class UserRepository {
                 ResultSet rs = pstmt.getGeneratedKeys();
 
                 rs.next();
-                newUser.setUserId(rs.getInt(1));
+                newUser.setId(rs.getInt(1));
 
             }
 
@@ -166,7 +166,7 @@ public class UserRepository {
                     + "first_name = '" + ersUser.getFirstName() + "', "
                     + "last_name = '" + ersUser.getLastName() + "' "
                     + "role_id = " + ersUser.getUserRole() + "', "
-                    + "WHERE ers_user_id = " + ersUser.getUserId();
+                    + "WHERE ers_user_id = " + ersUser.getId();
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.executeUpdate(); //
@@ -191,7 +191,7 @@ public class UserRepository {
          */
         while (rs.next()) {
             User temp = new User();
-            temp.setUserId(rs.getInt("ers_user_id"));
+            temp.setId(rs.getInt("ers_user_id"));
             temp.setUsername(rs.getString("username"));
             temp.setPassword(rs.getString("password"));
             temp.setFirstName(rs.getString("first_name"));

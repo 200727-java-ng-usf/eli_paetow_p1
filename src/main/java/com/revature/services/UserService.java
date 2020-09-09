@@ -6,7 +6,6 @@ import com.revature.exceptions.ResourceNotFoundException;
 import com.revature.models.User;
 import com.revature.models.Role;
 import com.revature.repos.UserRepository;
-import com.revature.util.AppState;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -19,7 +18,7 @@ public class  UserService {
     private UserRepository userRepo = new UserRepository();
 
 
-    public void authenticate(String username, String password) {
+    public User authenticate(String username, String password) {
 
         // validate that the provided username and password are not non-values
         if (username == null || username.trim().equals("") || password == null || password.trim().equals("")) {
@@ -27,7 +26,7 @@ public class  UserService {
         }
 
 
-        User authUser = userRepo.findUserByCredentials(username, password)
+        return userRepo.findUserByCredentials(username, password)
                 .orElseThrow(AuthenticationException::new);
 
 //        app.setCurrentUser(authUser);

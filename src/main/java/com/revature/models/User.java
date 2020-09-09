@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class User {
 
-    private int userId;
+    private int id;
     private String username;
     private String password;
     private String firstName;
@@ -17,7 +17,7 @@ public class User {
     }
 
     public User(int userId, String username, String password, String firstName, String lastName, String email, Role userRole) {
-        this.userId = userId;
+        this.id = userId;
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -26,12 +26,12 @@ public class User {
         this.userRole = userRole;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getId() {
+        return id;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setId(int userId) {
+        this.id = userId;
     }
 
     public String getUsername() {
@@ -87,7 +87,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return getUserId() == user.getUserId() &&
+        return getId() == user.getId() &&
                 Objects.equals(getUsername(), user.getUsername()) &&
                 Objects.equals(getPassword(), user.getPassword()) &&
                 Objects.equals(getFirstName(), user.getFirstName()) &&
@@ -98,14 +98,14 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getUsername(), getPassword(), getFirstName(), getLastName(), getEmail(), getUserRole());
+        return Objects.hash(getId(), getUsername(), getPassword(), getFirstName(), getLastName(), getEmail(), getUserRole());
     }
 
 
     @Override
     public String toString() {
         return "User{" +
-                "userId=" + userId +
+                "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
