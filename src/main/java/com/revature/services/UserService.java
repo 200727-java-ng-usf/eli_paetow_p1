@@ -2,19 +2,21 @@ package com.revature.services;
 
 import com.revature.exceptions.AuthenticationException;
 import com.revature.exceptions.InvalidRequestException;
+import com.revature.exceptions.ResourceNotFoundException;
 import com.revature.models.User;
 import com.revature.models.Role;
 import com.revature.repos.UserRepository;
 import com.revature.util.AppState;
 
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 public class  UserService {
 
-    private UserRepository userRepo;
-    public static AppState app = new AppState();
+//    public static AppState app = new AppState();
 
-    public UserService(UserRepository repo) {
-        userRepo = repo;
-    }
+    private UserRepository userRepo = new UserRepository();
 
 
     public void authenticate(String username, String password) {
@@ -28,7 +30,7 @@ public class  UserService {
         User authUser = userRepo.findUserByCredentials(username, password)
                 .orElseThrow(AuthenticationException::new);
 
-        app.setCurrentUser(authUser);
+//        app.setCurrentUser(authUser);
 
     }
 
@@ -59,5 +61,57 @@ public class  UserService {
         ersUser.setUserRole(ersUser.getUserRole());
         userRepo.update(ersUser);
     }
+    public Set<User> getAllUsers() {
+
+        Set<User> users = userRepo.findAllUsers();
+
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException();
+        }
+
+        return users;
+    }
+    public void register(User newUser) {
+
+        if (!isUserValid(newUser)) {
+            throw new InvalidRequestException("Invalid user field values provided during registration!");
+        }
+
+        Optional<User> existingUser = userRepo.findUserByUsername(newUser.getUsername());
+        if (existingUser.isPresent()) {
+            // TODO implement a custom ResourcePersistenceException
+            throw new RuntimeException("Provided username is already in use!");
+        }
+
+        newUser.setUserRole(Role.EMPLOYEE);
+        userRepo.save(newUser);
+        System.out.println(newUser);
+//        app.setCurrentUser(newUser);
+
+    }
+    public Set<User> getUsersByRole() {
+        return new HashSet<>();
+    }
+
+    public User getUserById(int id) {
+        if(id <= 0 ){
+            throw new InvalidRequestException("id cannot be less than 0");
+
+        }
+        return userRepo.findUserById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+
+    }
+
+    public User getUserByUsername(String username) {
+        return null;
+    }
+
+    public boolean deleteUserById(int id) {
+        return false;
+    }
+
+
+
 
 }

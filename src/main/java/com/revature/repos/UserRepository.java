@@ -4,15 +4,14 @@ import com.revature.models.Role;
 import com.revature.models.User;
 import com.revature.util.ConnectionFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 public class UserRepository {
+
+    //TODO check the id's change to userId ?
 
     //empty constructor
     public UserRepository(){
@@ -24,6 +23,72 @@ public class UserRepository {
             "ON eu.user_role_id = er.role_id ";
 
 
+
+    public Optional<User> findUserById(int id) {
+
+        Optional<User> _user = Optional.empty();
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+            String sql = baseQuery + "WHERE eu.id = ?";
+            //check id name in db
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, id);
+            Set<User> result = mapResultSet(pstmt.executeQuery());
+            if (!result.isEmpty()) {
+                _user = result.stream().findFirst();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return _user;
+    }
+    public Set<User> findAllUsers() {
+
+        Set<User> users = new HashSet<>();
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            String sql = baseQuery;
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            users = mapResultSet(rs);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return users;
+
+    }
+    public Optional<User> findUserByUsername(String username) {
+
+        Optional<User> _user = Optional.empty();
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            // you can control whether or not JDBC automatically commits DML statements
+//            conn.setAutoCommit(false);
+
+            String sql = baseQuery + "WHERE username = ?";
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+
+            ResultSet rs = pstmt.executeQuery();
+            _user = mapResultSet(rs).stream().findFirst();
+
+            // if you want to manually control the transaction
+//            conn.commit();
+//            conn.rollback();
+//            conn.setSavepoint();
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return _user;
+
+    }
 
     public Optional<User> findUserByCredentials(String username, String password) {
 
@@ -91,6 +156,32 @@ public class UserRepository {
         return null;
 
     }
+    public boolean update(User ersUser) {
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            String sql = "UPDATE project1.ers_users "
+                    + "SET email = '" + ersUser.getEmail() + "', "
+                    + "username = '" + ersUser.getUsername() + "', "
+                    + "password = '" + ersUser.getPassword() + "', "
+                    + "first_name = '" + ersUser.getFirstName() + "', "
+                    + "last_name = '" + ersUser.getLastName() + "' "
+                    + "role_id = " + ersUser.getUserRole() + "', "
+                    + "WHERE ers_user_id = " + ersUser.getUserId();
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.executeUpdate(); //
+            pstmt.close();
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return true;
+
+    }
+
+
+
     private Set<User> mapResultSet(ResultSet rs) throws SQLException {
 
         Set<User> users = new HashSet<>();
