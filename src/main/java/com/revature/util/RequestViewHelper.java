@@ -17,7 +17,6 @@ public class RequestViewHelper {
 
             case "/home.view":
             case "/project1/home.view":
-
                 String principal = (String) req.getSession().getAttribute("principal");
                 if (principal == null || principal.equals("")) {
                     return "partials/login.html";
