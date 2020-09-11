@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.revature.dtos.Credentials;
 import com.revature.dtos.ErrorResponse;
+import com.revature.dtos.Principal;
 import com.revature.exceptions.AuthenticationException;
 import com.revature.exceptions.InvalidRequestException;
 import com.revature.models.User;
@@ -41,8 +42,14 @@ public class AuthServlet extends HttpServlet {
 
             User authUser = userService.authenticate(creds.getUsername(), creds.getPassword());
 
+            Principal principal = new Principal(authUser);
             HttpSession session = req.getSession();
-            session.setAttribute("user-role", authUser.getUserRole().toString());
+            session.setAttribute("principal", principal.stringify());
+
+            String principalJSON = mapper.writeValueAsString(principal);
+            respWriter.write(principalJSON);
+
+            resp.setStatus(200);
 
         } catch (MismatchedInputException | InvalidRequestException mie) {
             resp.setStatus(400);

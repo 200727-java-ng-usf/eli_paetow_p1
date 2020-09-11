@@ -12,9 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 
 public class  UserService {
-
-//    public static AppState app = new AppState();
-
     private UserRepository userRepo = new UserRepository();
 
 
@@ -101,6 +98,16 @@ public class  UserService {
                 .orElseThrow(ResourceNotFoundException::new);
 
     }
+    public boolean isUsernameAvailable(String username) {
+        User user = userRepo.findUserByUsername(username).orElse(null);
+        return user == null;
+    }
+
+    public boolean isEmailAvailable(String email) {
+        User user = userRepo.findUserByEmail(email).orElse(null);
+        return user == null;
+    }
+
 
     public User getUserByUsername(String username) {
         return null;

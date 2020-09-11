@@ -16,8 +16,9 @@ public class User {
 
     }
 
-    public User(int userId, String username, String password, String firstName, String lastName, String email, Role userRole) {
-        this.id = userId;
+
+    public User(int id, String username, String password, String firstName, String lastName, String email, Role userRole) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -30,9 +31,10 @@ public class User {
         return id;
     }
 
-    public void setId(int userId) {
-        this.id = userId;
+    public void setId(int id) {
+        this.id = id;
     }
+    //why is this user id... problem might be here
 
     public String getUsername() {
         return username;

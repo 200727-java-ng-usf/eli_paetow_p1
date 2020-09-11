@@ -12,8 +12,6 @@ import java.util.Set;
 public class UserRepository {
 
     //TODO check the id's change to userId ?
-
-    //empty constructor
     public UserRepository(){
 
     }
@@ -29,7 +27,7 @@ public class UserRepository {
         Optional<User> _user = Optional.empty();
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseQuery + "WHERE eu.id = ?";
+            String sql = baseQuery + "WHERE eu.ers_user_id = ?";
             //check id name in db
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, id);
@@ -119,8 +117,31 @@ public class UserRepository {
         return _user;
     }
 
+    public Optional<User> findUserByEmail(String email) {
 
-    public Optional<User> save(User newUser) {
+        Optional<User> _user = Optional.empty();
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            String sql = baseQuery + "WHERE email = ?";
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, email);
+
+            ResultSet rs = pstmt.executeQuery();
+            _user = mapResultSet(rs).stream().findFirst();
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return _user;
+
+    }
+
+
+    //do we need to return an optional???
+    public void save(User newUser) {
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
             String sql = "INSERT INTO project1.ers_users (username, password, first_name, last_name, email, user_role_id) " +
@@ -152,8 +173,6 @@ public class UserRepository {
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
-
-        return null;
 
     }
     public boolean update(User ersUser) {
@@ -191,6 +210,7 @@ public class UserRepository {
          */
         while (rs.next()) {
             User temp = new User();
+            //id or ersuserid
             temp.setId(rs.getInt("ers_user_id"));
             temp.setUsername(rs.getString("username"));
             temp.setPassword(rs.getString("password"));

@@ -3,6 +3,7 @@ package com.revature.servlet;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.revature.dtos.ErrorResponse;
+import com.revature.dtos.Principal;
 import com.revature.exceptions.InvalidRequestException;
 import com.revature.exceptions.ResourceNotFoundException;
 import com.revature.models.User;
@@ -28,7 +29,31 @@ public class UserServlet extends HttpServlet {
         ObjectMapper mapper = new ObjectMapper();
         resp.setContentType("application/json");
 
+
+        String principalJson = (String) req.getSession().getAttribute("principal");
+        Principal principal = mapper.readValue(principalJson, Principal.class);
+
+        //check here for id problem
         System.out.println(req.getParameter("ers_user_id"));
+        System.out.println("why null??");
+
+        if(principalJson == null){
+
+            ErrorResponse err = new ErrorResponse(401, "No principal found");
+            respWriter.write(mapper.writeValueAsString(err));
+            resp.setStatus(401);
+            return;
+        }
+        if (!principal.getRole().equalsIgnoreCase("Admin")){
+            ErrorResponse err = new ErrorResponse(403, "forbidden role");
+            respWriter.write(mapper.writeValueAsString(err));
+            resp.setStatus(403);
+            return;
+
+        }
+
+        System.out.println(req.getParameter("id"));
+
 
         try {
             String idParam = req.getParameter("ers_user_id");
@@ -54,7 +79,9 @@ public class UserServlet extends HttpServlet {
             respWriter.write(mapper.writeValueAsString(err));
             String errJson = mapper.writeValueAsString(err);
             respWriter.write(errJson);
-        } catch (NumberFormatException | InvalidRequestException nfe) {
+        }
+
+        catch (NumberFormatException | InvalidRequestException nfe) {
 
             resp.setStatus(400);
             ErrorResponse err = new ErrorResponse(400, "bad user id provided");
