@@ -151,7 +151,7 @@ public class UserRepository {
              * Prepared Statement uses user generated values, denoted with ?s
              */
             // second parameter here is used to indicate column names that will have generated values
-            PreparedStatement pstmt = conn.prepareStatement(sql, new String[] {"id"});
+            PreparedStatement pstmt = conn.prepareStatement(sql, new String[] {"ers_user_id"});
             pstmt.setString(1, newUser.getUsername());
             pstmt.setString(2, newUser.getPassword());
             pstmt.setString(3, newUser.getFirstName());
