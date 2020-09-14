@@ -6,6 +6,10 @@ window.onload = function() {
     document.getElementById('toRegister').addEventListener('click', loadRegister);
     document.getElementById('toHome').addEventListener('click', loadHome);
     document.getElementById('toLogout').addEventListener('click', logout);
+    document.getElementById('toAllUsers').addEventListener('click', loadAllUsers);
+    document.getElementById('toAllReimbs').addEventListener('click', loadAllReimburements);
+
+
 }
 
 //----------------------LOAD VIEWS-------------------------
@@ -69,6 +73,93 @@ function loadHome() {
     }
 
 }
+//manager needs to see all users and reimbursements
+function loadAllUsers() {
+
+    console.log('in loadAllUsers()');
+
+    if (!localStorage.getItem('authUser')) { // make sure user is logged in.
+        console.log('No user logged in, navigating to login screen');
+        loadLogin();
+        return;
+    }
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.open('GET', 'users.view');
+    xhr.send();
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) { // && xhr.status == something (set in UserServlet?)
+            APP_VIEW.innerHTML = xhr.responseText;
+            configureAllUsersView();
+        }
+    }
+
+}
+
+function loadAllReimburements(){
+
+console.log('in loadAllReimbursements');
+
+if (!localStorage.getItem('authUser')) { // make sure user is logged in. TODO make sure user is admin
+        console.log('No user logged in');
+        loadLogin();
+        return;
+    }
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.open('GET', 'reimbursements.view');
+    xhr.send();
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) { // && xhr.status == something (set in UserServlet?)
+            APP_VIEW.innerHTML = xhr.responseText;
+            document.getElementById('viewReimbDetails').addEventListener('click', findReimbDetails);
+            configureAllReimbsView();
+        }
+    }
+
+}
+
+function loadReimbDetails() {
+
+    console.log('in loadReimbDetails()');
+
+    if (!localStorage.getItem('authUser')) {
+        console.log('No user logged in, navigating to login screen');
+        loadLogin();
+        return;
+    }
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.open('GET', 'reimbursements');
+    xhr.send();
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+
+            let array = JSON.parse(xhr.responseText);
+            console.log(array);
+
+            APP_VIEW.innerHTML = "<h1>Reimb Details:</h1>"
+                                + "<h3> ID:" + array.id + "</h3>"
+                                + "<h3> Amount:" + array.amount + "</h3>"
+                                + "<h3> Submitted:" + array.submitted + "</h3>"
+                                + "<h3> Resolved:" + array.resolved + "</h3>"
+                                + "<h3> Description:" + array.description + "</h3>"
+                                + "<h3> Author:" + array.authorId + "</h3>"
+                                + "<h3> Resolver:" + array.resolverId + "</h3>"
+                                + "<h3> Status:" + array.reimbursementStatus + "</h3>"
+                                + "<h3> Type:" + array.reimbursementType + "</h3>";
+
+
+        }
+    }
+
+}
 
 //----------------CONFIGURE VIEWS--------------------
 
@@ -103,6 +194,123 @@ function configureHomeView() {
     document.getElementById('loggedInUsername').innerText = authUser.username;
 
 }
+function configureAllUsersView() {
+
+    console.log('in configureAllUsersView');
+    let authUser = JSON.parse(localStorage.getItem('authUser'));
+    document.getElementById('loggedInUsername').innerText = authUser.username;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', 'users');
+    xhr.send();
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState = 4 && xhr.status == 200) {
+
+            let array = JSON.parse(xhr.responseText); // the response from a GET request to reimbs
+            console.log(array);
+            let table = document.getElementById("allUsersTable"); // accessing the HTML tag with this ID
+            let head = document.createElement("thead"); // create the table head
+            let body = document.createElement("tbody"); // creating a tbody element
+
+            table.appendChild(head); // append the head
+            head.innerHTML = "<tr>"
+                            + "<th>ID</th>"
+                            + "<th>Username</th>"
+                            + "<th>Password</th>"
+                            + "<th>First Name</th>"
+                            + "<th>Last Name</th>"
+                            + "<th>Email</th>"
+                            + "<th>Role</th>";
+                            console.log('test');
+
+            table.appendChild(body); // attaching the newly created element to the table that is already in the document
+
+            for (let i=0; i < array.length; i++) { // for every object in the response text...
+
+                let row = document.createElement("tr"); // create a row for that object
+
+                // each row has multiple data cells with information corresponsing the key value pairs in the response text
+                row.innerHTML = "<td>" + array[i].id + "</td>"
+                                    + "<td>" + array[i].username + "</td>"
+                                    + "<td>" + array[i].password + "</td>"
+                                    + "<td>" + array[i].firstName + "</td>"
+                                    + "<td>" + array[i].lastName + "</td>"
+                                    + "<td>" + array[i].email + "</td>"
+                                    + "<td>" + array[i].role + "</td>";
+
+                body.appendChild(row); // appoend each row to the body after finding the information about the object
+
+            }
+
+        }
+    }
+
+}
+
+function configureAllReimbsView(){
+
+console.log('in configure all reimbursements view');
+
+ let authUser = JSON.parse(localStorage.getItem('authUser'));
+    document.getElementById('loggedInUsername').innerText = authUser.username;
+    document.getElementById('viewReimbDetails').addEventListener('click', findReimbDetails);
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', 'reimbursements');
+    xhr.send();
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState = 4 && xhr.status == 200) {
+
+            var array = JSON.parse(xhr.responseText); // the response from a GET request to reimbs
+            let table = document.getElementById("reimbsTable"); // accessing the HTML tag with this ID
+            let head = document.createElement("thead"); // create the table head
+            let body = document.createElement("tbody"); // creating a tbody element
+
+            table.appendChild(head); // append the head
+            head.innerHTML = "<tr>"
+                            + "<th>ID</th>"
+                            + "<th>Author</th>"
+                            + "<th>Description</th>"
+                            + "<th>Amount</th>"
+                            + "<th>Submitted</th>"
+                            + "<th>Type</th>"
+                            + "<th>Status</th>"
+                            + "<th>Resolved</th>"
+                            + "<th>Resolver</th>";
+
+            table.appendChild(body); // attaching the newly created element to the table that is already in the document
+
+            for (let i=0; i < array.length; i++) { // for every object in the response text...
+
+                let row = document.createElement("tr"); // create a row for that object
+
+                // each row has multiple data cells with information corresponsing the key value pairs in the response text
+                row.innerHTML = "<td>" + array[i].id + "</td>"
+                                    + "<td>" + array[i].authorId + "</td>"
+                                    + "<td>" + array[i].description + "</td>"
+                                    + "<td>" + array[i].amount + "</td>"
+                                    + "<td>" + array[i].submitted + "</td>"
+                                    + "<td>" + array[i].reimbursementType + "</td>"
+                                    + "<td>" + array[i].reimbursementStatus + "</td>"
+                                    + "<td>" + array[i].resolved + "</td>"
+                                    + "<td>" + array[i].resolverId + "</td>";
+
+                body.appendChild(row); // append each row to the body after finding the information about the object
+
+            }
+
+
+
+        }
+    }
+
+}
+
+
+
+
 
 //------------------OPERATIONS-----------------------
 
@@ -200,6 +408,37 @@ function logout() {
             loadLogin();
         }
     }
+}
+
+function findReimbDetails() {
+
+    console.log('in findReimbDetails()');
+
+    let id = document.getElementById('reimbId').value;
+
+    let reimb = {
+        id: id
+    }
+
+    let reimbJSON = JSON.stringify(reimb);
+    console.log(reimbJSON);
+    console.log(reimbJSON.id);
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.open('POST', 'auth'); // needs to be a post so that the body of send method will not be ignored
+    xhr.send(reimbJSON);
+
+    xhr.onreadystatechange = function () {
+
+        if (xhr.readyState == 4 && xhr.status == 200) { // 201 created bc a new object will be created from the reimbId sent even though the reimb already exists.
+            localStorage.setItem('authReimb', reimb);
+            console.log(reimb);
+            loadReimbDetails(); // this function sent the ID. In the servlet, this should create an object to be used in the Reimb servlet(?)
+        }
+
+    }
+
 }
 
 function isUsernameAvailable() {

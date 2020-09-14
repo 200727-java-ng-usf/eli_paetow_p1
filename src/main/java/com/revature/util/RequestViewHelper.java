@@ -11,9 +11,17 @@ public class RequestViewHelper {
             case "/project1/login.view":
                 return "partials/login.html";
 
+            case "/reimbs.view":
+            case "/project1/reimbursements.view":
+                return "partials/reimbursements.html";
+
             case "/register.view":
             case "/project1/register.view":
                 return "partials/register.html";
+
+            case "/users.view":
+            case "/project1/users.view":
+                return "partials/users.html";
 
             case "/home.view":
             case "/project1/home.view":

@@ -8,6 +8,7 @@ import com.revature.dtos.Principal;
 import com.revature.exceptions.AuthenticationException;
 import com.revature.exceptions.InvalidRequestException;
 import com.revature.models.User;
+import com.revature.services.ReimbursementService;
 import com.revature.services.UserService;
 
 import javax.servlet.ServletException;
@@ -22,6 +23,8 @@ import java.io.PrintWriter;
 @WebServlet("/auth")
 public class AuthServlet extends HttpServlet {
     private final UserService userService = new UserService();
+
+    private final ReimbursementService reimbursementService = new ReimbursementService();
 
 
     @Override

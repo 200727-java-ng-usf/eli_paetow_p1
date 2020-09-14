@@ -25,76 +25,128 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        PrintWriter respWriter = resp.getWriter();
+//        PrintWriter respWriter = resp.getWriter();
+//        ObjectMapper mapper = new ObjectMapper();
+//        resp.setContentType("application/json");
+//
+//
+//        String principalJson = (String) req.getSession().getAttribute("principal");
+//        Principal principal = mapper.readValue(principalJson, Principal.class);
+//
+//        //check here for id problem
+//        System.out.println(req.getParameter("id"));
+//        System.out.println("why null??");
+//
+//        if(principalJson == null){
+//
+//            ErrorResponse err = new ErrorResponse(401, "No principal found");
+//            respWriter.write(mapper.writeValueAsString(err));
+//            resp.setStatus(401);
+//            return;
+//        }
+//        if (!principal.getRole().equalsIgnoreCase("Admin")){
+//            ErrorResponse err = new ErrorResponse(403, "forbidden role");
+//            respWriter.write(mapper.writeValueAsString(err));
+//            resp.setStatus(403);
+//            return;
+//
+//        }
+//
+//        System.out.println(req.getParameter("id"));
+//
+//
+//        try {
+//            String idParam = req.getParameter("ers_user_id");
+//            if (idParam != null) {
+//                int id = Integer.parseInt(idParam);
+//                User user = userService.getUserById(id);
+//                String usersJSON = mapper.writeValueAsString(user);
+//                respWriter.write(usersJSON);
+//
+//
+//            } else {
+//                System.out.println("Retrieving all users...");
+//                Set<User> users = userService.getAllUsers();
+//                String usersJSON = mapper.writeValueAsString(users);
+//                respWriter.write(usersJSON);
+//                resp.setStatus(200);
+//
+//            }
+//
+//        } catch (ResourceNotFoundException rnfe) {
+//            resp.setStatus(404);
+//            ErrorResponse err = new ErrorResponse(404, rnfe.getMessage());
+//            respWriter.write(mapper.writeValueAsString(err));
+//            String errJson = mapper.writeValueAsString(err);
+//            respWriter.write(errJson);
+//        }
+//
+//        catch (NumberFormatException | InvalidRequestException nfe) {
+//
+//            resp.setStatus(400);
+//            ErrorResponse err = new ErrorResponse(400, "bad user id provided");
+//            String errJson = mapper.writeValueAsString(err);
+//            respWriter.write(errJson);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            resp.setStatus(500); // 500 = INTERNAL SERVER ERROR
+//            ErrorResponse err = new ErrorResponse(500, "its not you its us");
+//            respWriter.write(mapper.writeValueAsString(err));
+//
+//        }
+
         ObjectMapper mapper = new ObjectMapper();
+        PrintWriter respWriter = resp.getWriter();
         resp.setContentType("application/json");
 
-
-        String principalJson = (String) req.getSession().getAttribute("principal");
-        Principal principal = mapper.readValue(principalJson, Principal.class);
-
-        //check here for id problem
         System.out.println(req.getParameter("ers_user_id"));
-        System.out.println("why null??");
-
-        if(principalJson == null){
-
-            ErrorResponse err = new ErrorResponse(401, "No principal found");
-            respWriter.write(mapper.writeValueAsString(err));
-            resp.setStatus(401);
-            return;
-        }
-        if (!principal.getRole().equalsIgnoreCase("Admin")){
-            ErrorResponse err = new ErrorResponse(403, "forbidden role");
-            respWriter.write(mapper.writeValueAsString(err));
-            resp.setStatus(403);
-            return;
-
-        }
-
-        System.out.println(req.getParameter("id"));
-
 
         try {
+
             String idParam = req.getParameter("ers_user_id");
+
             if (idParam != null) {
+
                 int id = Integer.parseInt(idParam);
                 User user = userService.getUserById(id);
-                String usersJSON = mapper.writeValueAsString(user);
-                respWriter.write(usersJSON);
-
+                String userJSON = mapper.writeValueAsString(user);
+                respWriter.write(userJSON);
 
             } else {
-                System.out.println("Retrieving all users...");
+
                 Set<User> users = userService.getAllUsers();
+
                 String usersJSON = mapper.writeValueAsString(users);
                 respWriter.write(usersJSON);
-                resp.setStatus(200);
+
+                resp.setStatus(200); // 200 = OK
+                System.out.println(resp.getStatus());
 
             }
 
+
+
+
         } catch (ResourceNotFoundException rnfe) {
+
             resp.setStatus(404);
+
             ErrorResponse err = new ErrorResponse(404, rnfe.getMessage());
             respWriter.write(mapper.writeValueAsString(err));
-            String errJson = mapper.writeValueAsString(err);
-            respWriter.write(errJson);
-        }
 
-        catch (NumberFormatException | InvalidRequestException nfe) {
-
-            resp.setStatus(400);
-            ErrorResponse err = new ErrorResponse(400, "bad user id provided");
-            String errJson = mapper.writeValueAsString(err);
-            respWriter.write(errJson);
-
+        } catch(NumberFormatException | InvalidRequestException e) {
+            resp.setStatus(400); // 400 Bad Request
+            ErrorResponse err = new ErrorResponse(400, "Malformed user id parameter value provided.");
+            String errJSON = mapper.writeValueAsString(err);
+            respWriter.write(errJSON);
         } catch (Exception e) {
             e.printStackTrace();
             resp.setStatus(500); // 500 = INTERNAL SERVER ERROR
-            ErrorResponse err = new ErrorResponse(500, "its not you its us");
+            ErrorResponse err = new ErrorResponse(500, "It's not you, it's us. Our bad");
             respWriter.write(mapper.writeValueAsString(err));
-
         }
+
     }
 
     /**
