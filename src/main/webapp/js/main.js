@@ -102,7 +102,7 @@ function loadAllReimburements(){
 
 console.log('in loadAllReimbursements');
 
-if (!localStorage.getItem('authUser')) { // make sure user is logged in. TODO make sure user is admin
+if (!localStorage.getItem('authUser')) {
         console.log('No user logged in');
         loadLogin();
         return;
@@ -114,7 +114,7 @@ if (!localStorage.getItem('authUser')) { // make sure user is logged in. TODO ma
     xhr.send();
 
     xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) { // && xhr.status == something (set in UserServlet?)
+        if (xhr.readyState == 4 && xhr.status == 200) {
             APP_VIEW.innerHTML = xhr.responseText;
             document.getElementById('viewReimbDetails').addEventListener('click', findReimbDetails);
             configureAllReimbsView();
@@ -224,13 +224,12 @@ function configureAllUsersView() {
                             + "<th>Role</th>";
                             console.log('test');
 
-            table.appendChild(body); // attaching the newly created element to the table that is already in the document
+            table.appendChild(body);
 
-            for (let i=0; i < array.length; i++) { // for every object in the response text...
+            for (let i=0; i < array.length; i++) {
 
-                let row = document.createElement("tr"); // create a row for that object
+                let row = document.createElement("tr");
 
-                // each row has multiple data cells with information corresponsing the key value pairs in the response text
                 row.innerHTML = "<td>" + array[i].id + "</td>"
                                     + "<td>" + array[i].username + "</td>"
                                     + "<td>" + array[i].password + "</td>"
@@ -263,8 +262,8 @@ console.log('in configure all reimbursements view');
     xhr.onreadystatechange = function() {
         if (xhr.readyState = 4 && xhr.status == 200) {
 
-            var array = JSON.parse(xhr.responseText); // the response from a GET request to reimbs
-            let table = document.getElementById("reimbsTable"); // accessing the HTML tag with this ID
+            var array = JSON.parse(xhr.responseText);
+            let table = document.getElementById("reimbsTable");
             let head = document.createElement("thead"); // create the table head
             let body = document.createElement("tbody"); // creating a tbody element
 
@@ -280,13 +279,12 @@ console.log('in configure all reimbursements view');
                             + "<th>Resolved</th>"
                             + "<th>Resolver</th>";
 
-            table.appendChild(body); // attaching the newly created element to the table that is already in the document
+            table.appendChild(body);
 
-            for (let i=0; i < array.length; i++) { // for every object in the response text...
+            for (let i=0; i < array.length; i++) {
 
                 let row = document.createElement("tr"); // create a row for that object
 
-                // each row has multiple data cells with information corresponsing the key value pairs in the response text
                 row.innerHTML = "<td>" + array[i].id + "</td>"
                                     + "<td>" + array[i].authorId + "</td>"
                                     + "<td>" + array[i].description + "</td>"
