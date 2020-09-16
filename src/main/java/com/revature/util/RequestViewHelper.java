@@ -23,6 +23,11 @@ public class RequestViewHelper {
             case "/project1/users.view":
                 return "partials/users.html";
 
+            case "/update.view":
+            case "/project1/update.view":
+                return "partials/update.html";
+
+
             case "/home.view":
             case "/project1/home.view":
                 String principal = (String) req.getSession().getAttribute("principal");

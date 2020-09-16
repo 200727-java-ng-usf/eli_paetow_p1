@@ -8,6 +8,8 @@ window.onload = function() {
     document.getElementById('toLogout').addEventListener('click', logout);
     document.getElementById('toAllUsers').addEventListener('click', loadAllUsers);
     document.getElementById('toAllReimbs').addEventListener('click', loadAllReimburements);
+//    document.getElementById('allReimbsBtn').addEventListener('click', loadAllReimburements);
+
 
 
 }
@@ -116,7 +118,7 @@ if (!localStorage.getItem('authUser')) {
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             APP_VIEW.innerHTML = xhr.responseText;
-            document.getElementById('viewReimbDetails').addEventListener('click', findReimbDetails);
+//            document.getElementById('viewReimbDetails').addEventListener('click', findReimbDetails);
             configureAllReimbsView();
         }
     }
@@ -189,7 +191,7 @@ function configureRegisterView() {
 }
 
 function configureHomeView() {
-    
+
     let authUser = JSON.parse(localStorage.getItem('authUser'));
     document.getElementById('loggedInUsername').innerText = authUser.username;
 
@@ -199,6 +201,8 @@ function configureAllUsersView() {
     console.log('in configureAllUsersView');
     let authUser = JSON.parse(localStorage.getItem('authUser'));
     document.getElementById('loggedInUsername').innerText = authUser.username;
+    //this is wrong delete
+//    document.getElementById('viewUserBtn').addEventListener('click', loadAllUsers);
 
     let xhr = new XMLHttpRequest();
     xhr.open('GET', 'users');
@@ -253,7 +257,8 @@ console.log('in configure all reimbursements view');
 
  let authUser = JSON.parse(localStorage.getItem('authUser'));
     document.getElementById('loggedInUsername').innerText = authUser.username;
-    document.getElementById('viewReimbDetails').addEventListener('click', findReimbDetails);
+//    document.getElementById('viewReimbDetails').addEventListener('click', findReimbDetails);
+        document.getElementById('allReimbsBtn').addEventListener('click', loadAllReimburements);
 
     let xhr = new XMLHttpRequest();
     xhr.open('GET', 'reimbursements');
@@ -386,12 +391,12 @@ function register() {
             document.getElementById('reg-message').innerText = err.message;
         }
     }
-    
+
 
 }
 
 function logout() {
-    
+
     console.log('in logout()');
 
     let xhr = new XMLHttpRequest();
