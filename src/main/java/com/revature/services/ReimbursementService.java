@@ -3,6 +3,7 @@ package com.revature.services;
 import com.revature.exceptions.InvalidRequestException;
 import com.revature.exceptions.ResourceNotFoundException;
 import com.revature.models.Reimbursement;
+import com.revature.models.ReimbursementType;
 import com.revature.repos.ReimbursementRepository;
 
 import java.util.Optional;
@@ -56,6 +57,18 @@ public class ReimbursementService {
 
         }
         return reimbursementRepository.findReimbursementById(id).orElseThrow(ResourceNotFoundException::new);
+
+    }
+
+    public Set<Reimbursement> getAllByType(ReimbursementType reimbursementType) {
+
+        Set<Reimbursement> reimbs = reimbursementRepository.findAllReimbsByType(reimbursementType);
+
+        if (reimbs.isEmpty()) {
+            throw new ResourceNotFoundException();
+        }
+
+        return reimbs;
 
     }
 

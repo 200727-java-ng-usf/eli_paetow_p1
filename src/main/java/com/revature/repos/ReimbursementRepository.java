@@ -129,6 +129,28 @@ public ReimbursementRepository(){
         }
 
     }
+    public Set<Reimbursement> findAllReimbsByType(ReimbursementType reimbursementType) {
+
+        Set<Reimbursement> reimbs = new HashSet<>();
+        Integer typeInt = reimbursementType.ordinal() + 1; // convert the enum constant to an ordinal to find in the DB
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            String sql = baseQuery + "WHERE reimb_type_id = ?";
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, typeInt);
+
+            ResultSet rs = pstmt.executeQuery();
+            reimbs = mapResultSet(rs);
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return reimbs;
+
+    }
 
 
 }
