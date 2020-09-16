@@ -50,6 +50,23 @@ function loadRegister() {
     }
 
 }
+function loadUpdate() {
+
+    console.log('in loadUpdate()');
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.open('GET', 'update.view'); // third parameter of this method is optional (defaults to true)
+    xhr.send();
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            APP_VIEW.innerHTML = xhr.responseText;
+            configureUpdateView();
+        }
+    }
+
+}
 
 function loadHome() {
 
@@ -192,6 +209,21 @@ function configureRegisterView() {
 
 
 }
+function configureUpdateView(){
+console.log('in configureUpdateView()');
+
+
+//these need to change but on the right track
+    document.getElementById('reg-message').setAttribute('hidden', true);
+
+    document.getElementById('reg-username').addEventListener('blur', isUsernameAvailable);
+    document.getElementById('email').addEventListener('blur', isEmailAvailable);
+
+    document.getElementById('register').setAttribute('disabled', true);
+    document.getElementById('reg-button-container').addEventListener('mouseover', validateRegisterForm);
+    document.getElementById('register').addEventListener('click', register);
+
+}
 
 function configureHomeView() {
 
@@ -207,6 +239,9 @@ function configureAllUsersView() {
     //this is wrong delete
 //    document.getElementById('viewUserBtn').addEventListener('click', loadAllUsers);
     document.getElementById('newUserBtn').addEventListener('click', loadRegister);
+    //button to get to update.html
+    document.getElementById('updateUserBtn').addEventListener('click', loadUpdate);
+
 
 
     let xhr = new XMLHttpRequest();
