@@ -3,14 +3,11 @@ const APP_VIEW = document.getElementById('app-view');
 window.onload = function() {
     loadLogin();
     document.getElementById('toLogin').addEventListener('click', loadLogin);
-    document.getElementById('toRegister').addEventListener('click', loadRegister);
+//    document.getElementById('toRegister').addEventListener('click', loadRegister);
     document.getElementById('toHome').addEventListener('click', loadHome);
     document.getElementById('toLogout').addEventListener('click', logout);
     document.getElementById('toAllUsers').addEventListener('click', loadAllUsers);
     document.getElementById('toAllReimbs').addEventListener('click', loadAllReimburements);
-//    document.getElementById('allReimbsBtn').addEventListener('click', loadAllReimburements);
-
-    document.getElementById('newUserBtn').addEventListener('click', loadRegister);
 
 
 
@@ -191,6 +188,9 @@ function configureRegisterView() {
     document.getElementById('reg-button-container').addEventListener('mouseover', validateRegisterForm);
     document.getElementById('register').addEventListener('click', register);
 
+
+
+
 }
 
 function configureHomeView() {
@@ -206,6 +206,8 @@ function configureAllUsersView() {
     document.getElementById('loggedInUsername').innerText = authUser.username;
     //this is wrong delete
 //    document.getElementById('viewUserBtn').addEventListener('click', loadAllUsers);
+    document.getElementById('newUserBtn').addEventListener('click', loadRegister);
+
 
     let xhr = new XMLHttpRequest();
     xhr.open('GET', 'users');
