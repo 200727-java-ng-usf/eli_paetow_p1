@@ -10,6 +10,8 @@ window.onload = function() {
     document.getElementById('toAllReimbs').addEventListener('click', loadAllReimburements);
 //    document.getElementById('allReimbsBtn').addEventListener('click', loadAllReimburements);
 
+    document.getElementById('newUserBtn').addEventListener('click', loadRegister);
+
 
 
 }
@@ -178,6 +180,7 @@ function configureLoginView() {
 function configureRegisterView() {
 
     console.log('in configureRegisterView()');
+
 
     document.getElementById('reg-message').setAttribute('hidden', true);
 
