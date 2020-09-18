@@ -2,6 +2,7 @@ package com.revature.util;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -25,31 +26,30 @@ public class ConnectionFactory { /*
      * */
     private ConnectionFactory() {
         try {
-            props.load(new FileReader("C:\\Users\\ep\\Desktop\\revature_git\\eli_paetow_p1\\eli_paetow_p1\\src\\main\\resources\\application.properties"));
-        }catch (IOException e){
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream propsInput = loader.getResourceAsStream("application.properties");
+
+            if (propsInput == null) {
+                props.setProperty("url", System.getProperty("url"));
+                props.setProperty("username", System.getProperty("username"));
+                props.setProperty("password", System.getProperty("password"));
+            } else {
+                props.load(propsInput);
+            }
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
-
-    /*
-     * set up getters tp work with connection factory since it is private
-     * */
-
-    public static ConnectionFactory getInstance(){
-
+    public static ConnectionFactory getInstance() {
         return connFactory;
     }
 
-
-
-
-    public Connection getConnection(){
+    public Connection getConnection() {
 
         Connection conn = null;
-        /*
-         *set up the connection to my dbeaver db
-         * */
 
         try {
 
@@ -66,23 +66,9 @@ public class ConnectionFactory { /*
             e.printStackTrace();
         }
 
-        if (conn == null) {
-            try {
-                conn = DriverManager.getConnection(
-                        System.getenv("url"),
-                        System.getenv("username"),
-                        System.getenv("password")
-                );
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-
         return conn;
 
     }
-
     /*
      *overrides
      * */
