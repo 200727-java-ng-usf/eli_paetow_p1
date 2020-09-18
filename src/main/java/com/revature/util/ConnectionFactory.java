@@ -52,22 +52,32 @@ public class ConnectionFactory { /*
          * */
 
         try {
+
+            // Force the JVM to load the PostGreSQL JDBC driver
             Class.forName("org.postgresql.Driver");
 
-            /*
-             *properties from the properties file
-             * */
-
-            conn = DriverManager.getConnection(props.getProperty("url") ,
-                    props.getProperty("username") ,
-                    props.getProperty("password"));
+            conn = DriverManager.getConnection(
+                    props.getProperty("url"),
+                    props.getProperty("username"),
+                    props.getProperty("password")
+            );
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
+
         if (conn == null) {
-            throw new RuntimeException("Failed to establish connection.");
+            try {
+                conn = DriverManager.getConnection(
+                        System.getenv("url"),
+                        System.getenv("username"),
+                        System.getenv("password")
+                );
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+
 
         return conn;
 
