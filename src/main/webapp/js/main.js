@@ -1112,7 +1112,6 @@ function deleteReimb() {
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) { // 200 OK. Use this code for delete?
-            console.log('sending the reimbursement to the servlet to delete it!');
             localStorage.removeItem('authReimb');
             loadAuthorReimbs();
         }
@@ -1127,7 +1126,7 @@ function approveItOrDenyIt() {
     // if the Reimbursement has a status other than PENDING, then alert the user they are overriding the status
     let reimbToCheckForOverride = JSON.parse(localStorage.getItem('authReimb'));
     if (reimbToCheckForOverride.reimbursementStatus != 'PENDING') {
-        alert('WARNING: You are overriding the status of a reimbursement that has already been resolved!');
+        alert('This reimbursement has already been resolved, do you want to override it?');
     }
 
     console.log('in approveItOrDenyIt()');
@@ -1138,11 +1137,11 @@ function approveItOrDenyIt() {
 
     // make the choice 2 or 3 depending on approve or deny
 
-    if (choice == 'yes' || 'Yes') {
+    if (choice == 'yes') {
         console.log('reimbursement approved by fin manager');
         statusId = 'APPROVED';
     }
-    if (choice == 'no' || 'No') {
+    else if (choice == 'no' || 'No') {
         console.log('reimbursement denied by fin manager');
         statusId = 'DENIED';
     }
