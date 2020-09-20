@@ -258,10 +258,10 @@ function loadReimbDetails() {
                                 + "<p> Type: " + array.reimbursementType + "</p>";
 
                 if (authUser.role == 'FinManager') {
-                    console.log('adding event listener to approveItOrDenyIt button');
+
                     document.getElementById('approveItOrDenyIt').addEventListener('click', approveItOrDenyIt);
                 } else {
-                    console.log('adding event listener to updateReimb button');
+
                     document.getElementById('chooseToUpdateReimb').addEventListener('click', loadUpdateReimb);
                 }
 
@@ -363,7 +363,7 @@ function configureHomeView() {
     document.getElementById('loggedInUsername').innerText = authUser.username;
 
     console.log(authUser.role);
-    console.log('User role should be logged above');
+
 
     // hide the login option and show the profile and logout option
     document.getElementById('toLogin').setAttribute('hidden', true);
