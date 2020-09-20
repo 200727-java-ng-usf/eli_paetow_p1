@@ -1,6 +1,6 @@
 package com.revature.util;
 
-import java.io.FileReader;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -8,24 +8,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class ConnectionFactory { /*
- * create a singleton
- * A singleton creational pattern
- * restricts the object creation for a class to only one
- * instance.
- * */
+public class ConnectionFactory {
 
     private static ConnectionFactory connFactory = new ConnectionFactory();
 
+    private final Properties props = new Properties();
 
-    private Properties props = new Properties();
-
-    /*
-     *set up the route for the application properties
-     * this will help keep unwanted details off github
-     * */
     private ConnectionFactory() {
+
         try {
+
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             InputStream propsInput = loader.getResourceAsStream("application.properties");
 
@@ -66,16 +58,26 @@ public class ConnectionFactory { /*
             e.printStackTrace();
         }
 
+        if (conn == null) {
+            try {
+                conn = DriverManager.getConnection(
+                        System.getenv("url"),
+                        System.getenv("username"),
+                        System.getenv("password")
+                );
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         return conn;
 
     }
-    /*
-     *overrides
-     * */
+
     @Override
     protected Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
     }
-
 
 }

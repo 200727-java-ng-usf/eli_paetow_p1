@@ -1,64 +1,64 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-        <meta charset="UTF-8">
-        <meta name="viewport"
-                content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>ERS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-                integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
-                crossorigin="anonymous">
+    <title>Expense Reimbursement System</title>
 
-        <link id="app-css" rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link id="app-css" rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
 
-        <style id="dynamic-css"></style>
 
+    <style id="dynamic-css"></style>
 </head>
-
 <body>
-        <div id="navbar">
-            <nav class="navbar navbar-expand-lg bg-dark">
-                <a class="navbar-brand" href="#">ERS</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse"
-                    data-target="#navbarNavAltMarkup"
-                    aria-controls="navbarNavAltMarkup" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span id="nav-dropdown" class="navbar-toggler-icon">Show</span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        <a class="nav-item nav-link" id="toLogin">Login</a> 
-<!--                        <a class="nav-item nav-link" id="toRegister">Register</a>-->
-                        <a class="nav-item nav-link" id="toHome">Home</a>
-                        <a class="nav-item nav-link" id="toAdmin">Admin</a>
-                        <a class="nav-item nav-link" id="toLogout">Logout</a>
-                        <a class="nav-item nav-link" id="toAllUsers">All Users</a>
-                        <a class="nav-item nav-link" id="toAllReimbs">All Reimbs</a>
 
-
-                    </div>
-                </div>
-            </nav>
+<div id="navbar">
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <a class="navbar-brand" href="#">Expense Reimbursement System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span id="nav-dropdown" class="navbar-toggler-icon">Show</span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" id="toLogin">Login</a>
+                <a class="nav-item nav-link" id="toHome">Home</a>
+                <a class="nav-item nav-link" id="toRegister">Register New User</a>
+                <a class="nav-item nav-link" id="toAllUsers">View All Users</a>
+                <a class="nav-item nav-link" id="toAllReimbs">View All Reimbursements</a>
+                <a class="nav-item nav-link" id="toSubmit">Submit New Reimbursements</a>
+                <a class="nav-item nav-link" id="toAuthorReimbs">My Reimbursements</a>
+                <a class="nav-item nav-link" id="toLogout">Logout</a>
+            </div>
         </div>
-    
-        <main class="container">
-            <div id="app-view"></div>
-        </main>
-    
-        <script src="js/main.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-                integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-                crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-                integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
-                crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-                integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
-                crossorigin="anonymous"></script>
-        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    </nav>
+</div>
+
+<main class="container">
+    <div id="app-view"></div>
+</main>
+
+<script src="js/main.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+<!--DataTables imports-->
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
 
 </body>
-    </html>
+</html>

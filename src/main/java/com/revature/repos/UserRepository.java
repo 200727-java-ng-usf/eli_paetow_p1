@@ -1,7 +1,7 @@
 package com.revature.repos;
 
+import com.revature.models.ErsUser;
 import com.revature.models.Role;
-import com.revature.models.User;
 import com.revature.util.ConnectionFactory;
 
 import java.sql.*;
@@ -9,44 +9,110 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+
 public class UserRepository {
 
-    //TODO check the id's change to userId ?
-    public UserRepository(){
-
-    }
-    //re use query
+    //reuseable
     private String baseQuery = "SELECT * FROM project1.ers_users eu " +
-            "JOIN project1.ers_user_roles er " +
-            "ON eu.user_role_id = er.role_id ";
+            "JOIN project1.ers_user_roles ur " +
+            "ON eu.user_role_id = ur.role_id ";
 
 
+    public UserRepository() {
+        System.out.println("[LOG] - Instantiating " + this.getClass().getName());
+    }
 
-    public Optional<User> findUserById(int id) {
 
-        Optional<User> _user = Optional.empty();
+    public void save(ErsUser newUser) {
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            String sql = "INSERT INTO project1.ers_users (username, password, first_name, last_name, email, user_role_id) " +
+                    "VALUES (?, ?, ?, ?, ?, ?)";
+
+            // second parameter here is used to indicate column names that will have generated values
+            PreparedStatement pstmt = conn.prepareStatement(sql, new String[]{"ers_user_id"});
+            pstmt.setString(1, newUser.getUsername());
+            pstmt.setString(2, newUser.getPassword());
+            pstmt.setString(3, newUser.getFirstName());
+            pstmt.setString(4, newUser.getLastName());
+            pstmt.setString(5, newUser.getEmail());
+            pstmt.setInt(6, newUser.getRole().ordinal());
+
+            int rowsInserted = pstmt.executeUpdate();
+
+            if (rowsInserted != 0) {
+
+                ResultSet rs = pstmt.getGeneratedKeys();
+
+                rs.next();
+                System.out.println(rs.getInt(1));
+                newUser.setId(rs.getInt(1));
+
+            }
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+
+    }
+
+
+    public Optional<ErsUser> findUserById(int id) {
+
+        Optional<ErsUser> _user = Optional.empty();
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
             String sql = baseQuery + "WHERE eu.ers_user_id = ?";
-            //check id name in db
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, id);
-            Set<User> result = mapResultSet(pstmt.executeQuery());
+
+            Set<ErsUser> result = mapResultSet(pstmt.executeQuery());
+
             if (!result.isEmpty()) {
                 _user = result.stream().findFirst();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return _user;
-    }
-    public Set<User> findAllUsers() {
 
-        Set<User> users = new HashSet<>();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+
+        return _user;
+
+    }
+
+    private Set<ErsUser> mapResultSet(ResultSet rs) throws SQLException {
+
+        Set<ErsUser> users = new HashSet<>();
+
+        while (rs.next()) {
+            ErsUser temp = new ErsUser();
+            temp.setId(rs.getInt("ers_user_id"));
+            temp.setFirstName(rs.getString("first_name"));
+            temp.setLastName(rs.getString("last_name"));
+            temp.setUsername(rs.getString("username"));
+            temp.setPassword(rs.getString("password"));
+            temp.setRole(Role.getByName(rs.getString("role_name")));
+            temp.setEmail(rs.getString("email"));
+//            System.out.println(temp);
+            users.add(temp);
+        }
+
+        return users;
+
+    }
+
+
+    public Set<ErsUser> findAllUsers() {
+
+        Set<ErsUser> users = new HashSet<>();
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
             String sql = baseQuery;
+
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             users = mapResultSet(rs);
@@ -58,14 +124,38 @@ public class UserRepository {
         return users;
 
     }
-    public Optional<User> findUserByUsername(String username) {
 
-        Optional<User> _user = Optional.empty();
+
+    public Optional<ErsUser> findUserByCredentials(String username, String password) {
+
+        Optional<ErsUser> _user = Optional.empty();
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
-            // you can control whether or not JDBC automatically commits DML statements
-//            conn.setAutoCommit(false);
+            String sql = baseQuery + "WHERE username = ? AND password = ?";
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            _user = mapResultSet(rs).stream().findFirst();
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return _user;
+    }
+
+
+    public Optional<ErsUser> findUserByUsername(String username) {
+
+        Optional<ErsUser> _user = Optional.empty();
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
 
             String sql = baseQuery + "WHERE username = ?";
 
@@ -75,10 +165,6 @@ public class UserRepository {
             ResultSet rs = pstmt.executeQuery();
             _user = mapResultSet(rs).stream().findFirst();
 
-            // if you want to manually control the transaction
-//            conn.commit();
-//            conn.rollback();
-//            conn.setSavepoint();
 
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -88,38 +174,10 @@ public class UserRepository {
 
     }
 
-    public Optional<User> findUserByCredentials(String username, String password) {
 
-        Optional<User> _user = Optional.empty();
+    public Optional<ErsUser> findUserByEmail(String email) {
 
-        /**
-         * Try with resources; the resource is the JDB
-         */
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-            String sql = baseQuery + "WHERE username = ? AND password = ?";
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-
-            ResultSet rs = pstmt.executeQuery(); // assign the SQL query to a ResultSet object
-
-            /**
-             * Map the result set of the query to the _user Optional
-             */
-            _user = mapResultSet(rs).stream().findFirst();
-
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-
-        return _user;
-    }
-
-    public Optional<User> findUserByEmail(String email) {
-
-        Optional<User> _user = Optional.empty();
+        Optional<ErsUser> _user = Optional.empty();
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
@@ -140,42 +198,7 @@ public class UserRepository {
     }
 
 
-    //do we need to return an optional???
-    public void save(User newUser) {
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-            String sql = "INSERT INTO project1.ers_users (username, password, first_name, last_name, email, user_role_id) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
-
-            /**
-             * Prepared Statement uses user generated values, denoted with ?s
-             */
-            // second parameter here is used to indicate column names that will have generated values
-            PreparedStatement pstmt = conn.prepareStatement(sql, new String[] {"ers_user_id"});
-            pstmt.setString(1, newUser.getUsername());
-            pstmt.setString(2, newUser.getPassword());
-            pstmt.setString(3, newUser.getFirstName());
-            pstmt.setString(4, newUser.getLastName());
-            pstmt.setString(5, newUser.getEmail());
-            pstmt.setInt(6, newUser.getUserRole().ordinal() + 1);
-
-            int rowsInserted = pstmt.executeUpdate(); // returns an int that represents the #rows inserted
-
-            if (rowsInserted != 0) {
-
-                ResultSet rs = pstmt.getGeneratedKeys();
-
-                rs.next();
-                newUser.setId(rs.getInt(1));
-
-            }
-
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-
-    }
-    public boolean update(User ersUser) {
+    public boolean update(ErsUser ersUser) {
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
             String sql = "UPDATE project1.ers_users "
@@ -183,9 +206,9 @@ public class UserRepository {
                     + "username = '" + ersUser.getUsername() + "', "
                     + "password = '" + ersUser.getPassword() + "', "
                     + "first_name = '" + ersUser.getFirstName() + "', "
-                    + "last_name = '" + ersUser.getLastName() + "' "
-                    + "role_id = " + ersUser.getUserRole() + "', "
-                    + "WHERE ers_user_id = " + ersUser.getId();
+                    + "last_name = '" + ersUser.getLastName() + "', "
+                    + "user_role_id = '" + (ersUser.getRole().ordinal() + 1) + "' "
+                    + "WHERE ers_user_id = '" + ersUser.getId() + "' ";
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.executeUpdate(); //
@@ -200,29 +223,24 @@ public class UserRepository {
     }
 
 
+    public void makeInactive(ErsUser newUser) {
 
-    private Set<User> mapResultSet(ResultSet rs) throws SQLException {
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
-        Set<User> users = new HashSet<>();
+            String sql = "UPDATE project1.ers_users "
+                    + "SET role_id = 4";
 
-        /**
-         * Extract results, set the temporary AppUser fields, and add the temp AppUser to the Set.
-         */
-        while (rs.next()) {
-            User temp = new User();
-            //id or ersuserid
-            temp.setId(rs.getInt("ers_user_id"));
-            temp.setUsername(rs.getString("username"));
-            temp.setPassword(rs.getString("password"));
-            temp.setFirstName(rs.getString("first_name"));
-            temp.setLastName(rs.getString("last_name"));
-            temp.setEmail(rs.getString("email"));
-            temp.setUserRole(Role.getByName(rs.getString("user_role_id")));
-            System.out.println(temp);
-            users.add(temp);
+            Statement stmt = conn.createStatement();
+            stmt.executeQuery(sql);
+
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
         }
 
-        return users;
-
     }
+
+
+
+
 }

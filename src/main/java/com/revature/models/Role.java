@@ -1,9 +1,12 @@
 package com.revature.models;
 
+
 public enum Role {
+
     ADMIN("Admin"),
-    FINANCE_MANAGER("Finance Manager"),
-    EMPLOYEE("Employee");
+    FINANCE_MANAGER("FinManager"),
+    EMPLOYEE("Employee"),
+    INACTIVE("Inactive");
 
     private String roleName;
 
@@ -20,12 +23,17 @@ public enum Role {
             }
         }
 
-        return EMPLOYEE;
+        return FINANCE_MANAGER; // default is inactive
+
+
 
     }
+
+
 
     @Override
     public String toString() {
         return roleName;
     }
+
 }

@@ -1,24 +1,25 @@
 package com.revature.dtos;
-
+import java.util.Objects;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.models.User;
 
-import java.util.Objects;
+import com.revature.models.ErsUser;
+
 
 public class Principal {
+
     private int id;
     private String username;
     private String role;
 
-    public Principal(){
-
+    public Principal() {
+        super();
     }
 
-    public Principal(User appUser){
-        this.id = appUser.getId();
-        this.username = appUser.getUsername();
-        this.role = appUser.getUserRole().toString();
+    public Principal(ErsUser user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.role = user.getRole().toString();
     }
 
     public int getId() {
@@ -73,4 +74,5 @@ public class Principal {
                 ", role='" + role + '\'' +
                 '}';
     }
+
 }

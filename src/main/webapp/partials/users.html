@@ -1,19 +1,18 @@
 <div id="users-container">
-    <h1>Hello Admin, <span id="loggedInUsername"></span></h1>
+    <h1>Hello, <span id="loggedInUsername"></span></h1>
     <div>
-        Admin options6
+        Admin can view all Users
+    </div>
+    <div class="form-group">
+        <label for="userId">Enter User ID to Edit</label>
+        <input type="text" class="form-control" id="userId" >
+    </div>
+    <div id="update-button-container">
+        <button type="submit" class="btn btn-primary" id="findUserToEdit">Edit</button>
+    </div>
 
-        </br>
-
-
-        //not right
-        <button id="newUserBtn">Add a new user</button>
-        <button id="viewUserBtn">View all users</button>
-        <button id="updateUserBtn">Update a user</button>
-        <button id="deleteUserBtn">Delete a user</button>
+    <div id="anotherTable">
 
     </div>
-    <table id="allUsersTable">
-        <!-- table that is populated dynamically in configureAllUsersView()-->
-    </table>
+
 </div>
